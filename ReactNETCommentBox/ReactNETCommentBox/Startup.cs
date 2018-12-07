@@ -11,18 +11,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Oesia.Data;
+using ReactNETCommentBox.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Oesia.Models;
 
-// branch test
-namespace Oesia
+namespace ReactNETCommentBox
 {
     public class Startup
     {
-        //private string _movieApiKey = null;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -33,7 +29,6 @@ namespace Oesia
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            //_movieApiKey = Configuration["DefaultConnection"];
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -44,13 +39,11 @@ namespace Oesia
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDefaultIdentity<IdentityUser>()
-            //.AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddIdentity<AppUser, AppRole>(options => options.Stores.MaxLengthForKeys = 128).AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultUI().AddDefaultTokenProviders();
+            services.AddDefaultIdentity<IdentityUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             return services.BuildServiceProvider();
@@ -59,17 +52,10 @@ namespace Oesia
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            //var builder = new ConfigurationBuilder()
-            //.SetBasePath(env.ContentRootPath)
-            //.AddJsonFile("appsettings.json",
-            //             optional: false,
-            //             reloadOnChange: true)
-            //.AddEnvironmentVariables();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                //builder.AddUserSecrets<Startup>();
             }
             else
             {
